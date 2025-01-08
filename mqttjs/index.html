@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>EMQX + ESP32 Demo</title>
+  <!-- Подключаем внешний CSS -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>Демонстрация работы ESP32 с EMQX (MQTT over WebSocket)</h1>
+
+  <p>
+    Текущий статус LED: 
+    <span id="ledStatus" class="led-status">Неизвестно</span>
+    <button id="toggleBtn">Переключить LED</button>
+  </p>
+
+  <div class="display-inputs">
+    <label for="line1">Строка 1:</label>
+    <input type="text" id="line1" maxlength="16" size="16" placeholder="Текст 1">
+    <br>
+    <label for="line2">Строка 2:</label>
+    <input type="text" id="line2" maxlength="16" size="16" placeholder="Текст 2">
+  </div>
+
+  <!-- Подключаем MQTT.js через CDN -->
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+  <!-- Подключаем внешний JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>

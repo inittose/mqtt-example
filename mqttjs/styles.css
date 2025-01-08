@@ -1,0 +1,51 @@
+body {
+  font-family: sans-serif;
+  margin: 20px;
+}
+
+.led-status {
+  font-weight: bold;
+  color: #d32f2f;
+}
+
+.led-status.on {
+  color: green;
+}
+
+#toggleBtn {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.display-inputs {
+  margin-top: 20px;
+}
+
+.display-inputs label {
+  display: inline-block;
+  width: 70px;
+  font-weight: bold;
+}
+
+.display-inputs input {
+  padding: 5px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.current-status {
+  margin-top: 30px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+.current-status h2 {
+  margin-top: 0;
+}
+
+.current-status p {
+  margin: 5px 0;
+}
