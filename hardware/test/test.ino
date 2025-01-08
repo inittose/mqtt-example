@@ -15,11 +15,14 @@ const char *ssid = ""; // Enter your WiFi name
 const char *password = "";  // Enter WiFi password
 
 // MQTT Broker
-const char *mqtt_broker = "";
-const char *topic_button = "esp32/button";
+const char *mqtt_broker = "";                 // Адрес/доменное имя mqtt-брокера
+const char *topic_button = "esp32/button";    // Инициализация топиков
 const char *topic_display = "esp32/display";
 const char *topic_update = "esp32/update";
 const char *topic_status = "esp32/status";
+// Топик - это такой раздел, в который отправляются
+// сообщения (из него также можно получить сообщение)
+// Обычно топик именуется иерархически, например house/kitchen/temperature ("дом/кухня/температура")
 const char *mqtt_username = "admin";
 const char *mqtt_password = "admin76767676";
 const int mqtt_port = 1883;
@@ -41,17 +44,21 @@ struct Cfg
 
 Cfg config;
 
+// Обрабатывает входящие сообщения в топике.
+// topic - название самого топика
+// payload - json-сообщение топика
+// length - длина сообщения топика
 void callback(char *topic, byte *payload, unsigned int length)
 {
   JsonDocument doc;
-  DeserializationError error = deserializeJson(doc, payload);
+  DeserializationError error = deserializeJson(doc, payload); // разбивает json-сообщение в словарь doc
   if (error) {
     Serial.print(F("deserializeJson() failed: "));
     Serial.println(error.f_str());
     return;
   }
 
-  if (strcmp(topic, topic_button) == 0)
+  if (strcmp(topic, topic_button) == 0) // Проверка, является ли топик топиком нажатия кнопки
   {
     config.isLedActive = doc["isLedActive"];
     UpdateLed();
@@ -70,6 +77,7 @@ void callback(char *topic, byte *payload, unsigned int length)
   }
 }
 
+// Отправляет в топик статуса json-сообщение со всеми текущими данными 
 void PublishConfig()
 {
   JsonDocument doc;
@@ -78,7 +86,7 @@ void PublishConfig()
   doc["line2"] = config.line2;
   String json;
   serializeJsonPretty(doc, json);
-  client.publish(topic_status, json.c_str());
+  client.publish(topic_status, json.c_str()); // Отправить json-сообщение в топик
 }
 
 void UpdateLed()
@@ -129,6 +137,8 @@ void ButtonClickEvent()
 void setup()
 {
   Serial.begin(115200);
+
+  // Подключается к WiFi
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED)
   {
@@ -136,6 +146,7 @@ void setup()
     Serial.println("Connecting to WiFi..");
   }
 
+  // Подключаемся к брокеру mqtt
   client.setServer(mqtt_broker, mqtt_port);
   client.setCallback(callback);
   while (!client.connected()) 
@@ -166,6 +177,7 @@ void setup()
   saveTimer.stop();
   saveTimer.attach(SaveConfig);
 
+  // Подписываемся на топики (будем получать сообщения в функции callback)
   client.subscribe(topic_button);
   client.subscribe(topic_display);
   client.subscribe(topic_update);
